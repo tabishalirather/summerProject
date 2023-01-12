@@ -1,30 +1,34 @@
 import sympy as sp
 
 
+
 def getVarList():
     varList = [sp.Symbol('z'), sp.Symbol('y'), sp.Symbol('x'), sp.Symbol('w')]
     return varList
 
 
-def calcSimgaIntegral(varList):
+def calcOmegaIntegral(varList):
     # f-dz, g-dy, x-dx, w-dw
     toBeIntegrated = varList[0] ** 0
     upperLimit = 0
     # print(len(varList))
+    isFirstIntegral = True
     for i in (range(len(varList))):
         if (i != len(varList) - 1):
-            # print(varList[len(varList) - 1])
-            # if(i == 1):
-            #     upperLimit = 1 + varList[len(varList) - 1]
-            result = sp.integrate(toBeIntegrated, (varList[i], varList[i + 1], 1))
-            # else:
-            #     upperLimit = 1
-            #     result = sp.integrate(toBeIntegrated, (varList[i], varList[i + 1], 1))
-            print(f"Integral wrt d{varList[i]}: {result}")
-            toBeIntegrated = result
+            if(isFirstIntegral):
+                upperLimit = 1 + varList[len(varList) - 1]
+                result = sp.integrate(toBeIntegrated, (varList[i], varList[i + 1], upperLimit))
+                print(toBeIntegrated, (varList[i], varList[i + 1], upperLimit))
+                print(f"Integral wrt d{varList[i]}: {result}")
+                isFirstIntegral = False
+            else:
+                upperLimit = 1
+                result = sp.integrate(toBeIntegrated, (varList[i], varList[i + 1], upperLimit))
+                toBeIntegrated = result
+                print(f"Integral wrt d{varList[i]}: {result}")
         else:
             result = sp.integrate(toBeIntegrated, (varList[i], 0, 1))
-            print(f"{len(varList)}-Variable Sima value is: {result}")
+            print(f"{len(varList)}-Variable Omega Integral value is: {result}")
 
 
 def main():
@@ -53,15 +57,15 @@ def main():
                      sp.Symbol('z'),
                      sp.Symbol('y'),
                      sp.Symbol('x'), sp.Symbol('w')]
-    calcSimgaIntegral(fourVarList)
-    calcSimgaIntegral(fiveVarList)
-    calcSimgaIntegral(sixVarList)
-    calcSimgaIntegral(sevenVarList)
-    calcSimgaIntegral(eightVarList)
-    calcSimgaIntegral(nineVarList)
-    calcSimgaIntegral(tenVarList)
-    calcSimgaIntegral(elevenVarList)
-    calcSimgaIntegral(twelveVarList)
+    calcOmegaIntegral(fourVarList)
+    calcOmegaIntegral(fiveVarList)
+    calcOmegaIntegral(sixVarList)
+    calcOmegaIntegral(sevenVarList)
+    calcOmegaIntegral(eightVarList)
+    calcOmegaIntegral(nineVarList)
+    calcOmegaIntegral(tenVarList)
+    calcOmegaIntegral(elevenVarList)
+    calcOmegaIntegral(twelveVarList)
     print("THis is what i add")
 
 

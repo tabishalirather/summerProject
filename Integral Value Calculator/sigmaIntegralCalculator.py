@@ -1,15 +1,9 @@
 import sympy as sp
 
 
-def getVarList():
-    varList = [sp.Symbol('z'), sp.Symbol('y'), sp.Symbol('x'), sp.Symbol('w')]
-    return varList
-
-
-def calcSimgaIntegral(varList):
+def calcSigmaIntegral(varList):
     # f-dz, g-dy, x-dx, w-dw
     toBeIntegrated = varList[0] ** 0
-    print(len(varList))
     for i in (range(len(varList))):
         if (i != len(varList)-1):
             result = sp.integrate(toBeIntegrated, (varList[i], varList[i + 1], 1))
@@ -17,14 +11,15 @@ def calcSimgaIntegral(varList):
             toBeIntegrated = result
         else:
             result = sp.integrate(toBeIntegrated, (varList[i], 0, 1))
-            print(f"{len(varList)}-Variable Sima value is: {result}")
+            print(f"{len(varList)}-Variable Sigma value is: {result}")
 
 
 def main():
     fourVarList = [sp.Symbol('z'), sp.Symbol('y'), sp.Symbol('x'), sp.Symbol('w')]
-    fiveVarList = [sp.Symbol('z'), sp.Symbol('y'), sp.Symbol('x'), sp.Symbol('w'), sp.Symbol('a')]
-    sixVarList = [sp.Symbol('z'), sp.Symbol('y'), sp.Symbol('x'), sp.Symbol('w'), sp.Symbol('a'), sp.Symbol('b')]
-    sevenVarList = [sp.Symbol('z'), sp.Symbol('y'), sp.Symbol('x'), sp.Symbol('w'), sp.Symbol('a'), sp.Symbol('b'), sp.Symbol('c')]
+    fiveVarList = [sp.Symbol('a'), sp.Symbol('z'), sp.Symbol('y'), sp.Symbol('x'), sp.Symbol('w')]
+    sixVarList = [sp.Symbol('b'), sp.Symbol('a'), sp.Symbol('z'), sp.Symbol('y'), sp.Symbol('x'), sp.Symbol('w')]
+    sevenVarList = [sp.Symbol('c'), sp.Symbol('b'), sp.Symbol('a'), sp.Symbol('z'), sp.Symbol('y'),
+                    sp.Symbol('x'), sp.Symbol('w')]
     eightVarList = [sp.Symbol('d'), sp.Symbol('c'), sp.Symbol('b'), sp.Symbol('a'), sp.Symbol('z'), sp.Symbol('y'),
                     sp.Symbol('x'), sp.Symbol('w')]
     nineVarList = [sp.Symbol('e'), sp.Symbol('d'), sp.Symbol('c'), sp.Symbol('b'), sp.Symbol('a'), sp.Symbol('z'),
@@ -45,15 +40,15 @@ def main():
                      sp.Symbol('z'),
                      sp.Symbol('y'),
                      sp.Symbol('x'), sp.Symbol('w')]
-    calcSimgaIntegral(fourVarList)
-    calcSimgaIntegral(fiveVarList)
-    calcSimgaIntegral(sixVarList)
-    calcSimgaIntegral(sevenVarList)
-    calcSimgaIntegral(eightVarList)
-    calcSimgaIntegral(nineVarList)
-    calcSimgaIntegral(tenVarList)
-    calcSimgaIntegral(elevenVarList)
-    calcSimgaIntegral(twelveVarList)
+    calcSigmaIntegral(fourVarList)
+    calcSigmaIntegral(fiveVarList)
+    calcSigmaIntegral(sixVarList)
+    calcSigmaIntegral(sevenVarList)
+    calcSigmaIntegral(eightVarList)
+    calcSigmaIntegral(nineVarList)
+    calcSigmaIntegral(tenVarList)
+    calcSigmaIntegral(elevenVarList)
+    calcSigmaIntegral(twelveVarList)
 
 
 

@@ -12,6 +12,7 @@ def calcSigmaIntegral(varList):
         else:
             result = sp.integrate(toBeIntegrated, (varList[i], 0, 1))
             print(f"{len(varList)}-Variable Sigma value is: {result}")
+    return result
 
 
 def main():
@@ -40,15 +41,15 @@ def main():
                      sp.Symbol('z'),
                      sp.Symbol('y'),
                      sp.Symbol('x'), sp.Symbol('w')]
-    calcSigmaIntegral(fourVarList)
+    # calcSigmaIntegral(fourVarList)
     calcSigmaIntegral(fiveVarList)
-    calcSigmaIntegral(sixVarList)
-    calcSigmaIntegral(sevenVarList)
-    calcSigmaIntegral(eightVarList)
-    calcSigmaIntegral(nineVarList)
-    calcSigmaIntegral(tenVarList)
-    calcSigmaIntegral(elevenVarList)
-    calcSigmaIntegral(twelveVarList)
+    # calcSigmaIntegral(sixVarList)
+    # calcSigmaIntegral(sevenVarList)
+    # calcSigmaIntegral(eightVarList)
+    # calcSigmaIntegral(nineVarList)
+    # calcSigmaIntegral(tenVarList)
+    # calcSigmaIntegral(elevenVarList)
+    # calcSigmaIntegral(twelveVarList)
 
 
 

@@ -1,22 +1,16 @@
 import sympy as sp
 
 
-
-def getVarList():
-    varList = [sp.Symbol('z'), sp.Symbol('y'), sp.Symbol('x'), sp.Symbol('w')]
-    return varList
-
-
 def calcOmegaIntegral(varList):
     # f-dz, g-dy, x-dx, w-dw
     toBeIntegrated = varList[0] ** 0
-    upperLimit = 0
-    # print(len(varList))
     isFirstIntegral = True
     for i in (range(len(varList))):
         if (i != len(varList) - 1):
+            # check if integral is being calculated for first time and set limit accordingly
             if(isFirstIntegral):
                 upperLimit = 1 + varList[len(varList) - 1]
+                # integrate("function, Integration variable, lowLimit, Up-limit")
                 result = sp.integrate(toBeIntegrated, (varList[i], varList[i + 1], upperLimit))
                 print(toBeIntegrated, (varList[i], varList[i + 1], upperLimit))
                 print(f"Integral wrt d{varList[i]}: {result}")
@@ -27,6 +21,7 @@ def calcOmegaIntegral(varList):
                 toBeIntegrated = result
                 print(f"Integral wrt d{varList[i]}: {result}")
         else:
+            # final integration with limits 0 to 1
             result = sp.integrate(toBeIntegrated, (varList[i], 0, 1))
             print(f"{len(varList)}-Variable Omega Integral value is: {result}")
 
@@ -66,7 +61,6 @@ def main():
     calcOmegaIntegral(tenVarList)
     calcOmegaIntegral(elevenVarList)
     calcOmegaIntegral(twelveVarList)
-    print("THis is what i add")
 
 
 main()

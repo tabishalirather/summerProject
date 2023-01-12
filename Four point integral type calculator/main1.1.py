@@ -77,5 +77,7 @@ def main():
     typeOfIntegral(secondGraphB4, config)
     typeOfIntegral(thirdGraphB4, config)
 
+    print("This needs to be revereted")
+
 
 main()

@@ -1,5 +1,6 @@
 import sympy as sp
 
+
 # turns out xIntegral is same as omegaIntegral
 def calcXIntegral(varList):
     # f-dz, g-dy, x-dx, w-dw

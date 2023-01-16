@@ -2,18 +2,18 @@ from itertools import combinations
 import numpy as np
 
 
-def generate_biconnected_graphs_4_vertices():
+def generate_biconnected_graphs(number_of_vertices):
     # Initialize the list of adjacency matrices
     adj_mats = []
 
     # Generate all combinations of edges in the complete graph
-    edges = combinations(range(4), 2)
+    edges = combinations(range(number_of_vertices), 2)
     edges = list(edges)
 
     # Iterate over all edges
     for u, v in edges:
         # Create a complete graph with 5 vertices
-        adj_mat = [[0 for _ in range(4)] for _ in range(4)]
+        adj_mat = [[0 for _ in range(number_of_vertices)] for _ in range(number_of_vertices)]
         for i, j in edges:
             adj_mat[i][j] = 1
             adj_mat[j][i] = 1
@@ -24,9 +24,9 @@ def generate_biconnected_graphs_4_vertices():
 
         # Check if the graph is biconnected
         is_biconnected = True
-        visited = [False] * 4
-        low = [0] * 4
-        disc = [0] * 4
+        visited = [False] * number_of_vertices
+        low = [0] * number_of_vertices
+        disc = [0] * number_of_vertices
         timestamp = 0
 
         def dfs(v, parent):
@@ -35,7 +35,7 @@ def generate_biconnected_graphs_4_vertices():
             disc[v] = low[v] = timestamp
             timestamp += 1
             children = 0
-            for u in range(4):
+            for u in range(number_of_vertices):
                 if adj_mat[v][u] == 1:
                     if not visited[u]:
                         children += 1
@@ -65,77 +65,36 @@ def permute(arr):
     return result
 
 
-def printBiconnected():
-    biconnected_graphs = generate_biconnected_graphs_4_vertices()
+# def printBiconnected():
+#     biconnected_graphs = generate_biconnected_graphs_4_vertices()
+#     for i, graph in enumerate(biconnected_graphs):
+#         print(f'Graph {i + 1}')
+#         for row in graph:
+#             print(row)
+
+
+def printAllBiconnectedGraphs(number_of_vertices, config):
+    allConfigs = permute(config)
+    biconnected_graphs = generate_biconnected_graphs(number_of_vertices)
+    # Code block adds vertices as first row and column for identification purpose
+    for graph in biconnected_graphs:
+        # //insert first row and integers
+        graph.insert(0, [0] + list(range(1, number_of_vertices+1)))
+        for i in range(1, number_of_vertices+1):
+            # inserts first columns and integers
+            graph[i].insert(0, i)
+
     for i, graph in enumerate(biconnected_graphs):
         print(f'Graph {i + 1}')
         for row in graph:
             print(row)
 
-
-def printAllBiconnectedGraphs():
-    biconnected_graphs = generate_biconnected_graphs_4_vertices()
-    config = [1, 3, 2, 4, ]
-    allConfigs = permute(config)
-    # for config in allConfigs:
-    # print(config)
-    for graph in biconnected_graphs:
-        # //insert first row and integers
-        graph.insert(0, [0] + list(range(1, 6)))
-        for i in range(1, 6):
-            # inserts first columns and integers
-            graph[i].insert(0, i)
-    arrayOfGraphs = []
-    simgaCount = 0
-    for i, graph in enumerate(biconnected_graphs):
-        print(f'Graph {i + 1}')
-        for config in allConfigs:
-            if (graph[config[0]][config[4]] == 1):
-                # //check for one particular graphs and then for others
-                print(config)
-                print("simga integral")
-                simgaCount += 1
-                print(simgaCount)
-            elif (graph[config[0]][config[len(config) - 1]] == 1 and graph[config[0]][config[len(config) - 1]] == 1):
-                print("2 and 1 not connected")
-        for adjacencyArray in graph:
-            arrayOfGraphs.append(adjacencyArray)
-            # print(adjacencyArray)
-            # print(adjacencyArray[0])
-            # if(adjacencyArray[3][2] == 1):
-            #     print("Edge between 3 and 2")
-            # else:
-            #     print("no edge between 3 and 2")
-
-    print(f"Number of sinma integrals is: {simgaCount}")
 
 
 def main():
-    # printAllBiconnectedGraphs()
-    # arrayOfGraphs[0]
-    # Using normal lists
-    biconnected_graphs = generate_biconnected_graphs_4_vertices()
-    config = [1, 4, 3, 2]
-    for graph in biconnected_graphs:
-        # //insert first row and integers
-        graph.insert(0, [0] + list(range(1, 5)))
-        for i in range(1, 5):
-            # inserts first columns and integers
-            graph[i].insert(0, i)
-
-    for i, graph in enumerate(biconnected_graphs):
-        print(f'Graph {i + 1}')
-        for row in graph:
-            print(row)
-    # for(k) in range(len(graph)):
-    #     for j in range(len(graph[k])):
-    #         element = graph[k][j]
-    #         if(graph[config[0][config[4]]] == 1):
-    #             print(f"Sigma integral: {config}")
-    #         # print(element)
-
-    # print(adjacency_matrices)
-    # printBiconnected()
+    config = [1, 2, 3, 4, 5, 6, 7, 8, 9]
+    number_of_vertices = 9
+    printAllBiconnectedGraphs(number_of_vertices, config)
 
 
 main()

@@ -3,7 +3,7 @@ import sympy as sp
 import math
 
 
-def getadjacencyMatrix():
+def getAdjacencyMatrix():
     adjacencyMatrix = np.array(
         [
             [0, 1, 2, 3, 4, 5],
@@ -17,8 +17,8 @@ def getadjacencyMatrix():
 
 
 def getCombination():
-    combination = [1, 4, 2, 5, 3]
-    combination = [1, 2, 5, 3, 4]
+    combination = [[1, 2, 4, 5, 3], [1, 2, 5, 4, 3], [1, 5, 2, 4, 3], [1, 5, 4, 2, 3], [1, 4, 2, 5, 3],
+                   [1, 4, 5, 2, 3], ]
     return combination
 
 
@@ -27,103 +27,40 @@ def getVarList():
     return varList
 
 
-# # print(adjacencyMatrix[1][1])
-# # print(adjacencyMatrix[1][2])
-# # print(adjacencyMatrix.shape[0]-1)
-# connectedNodes = []
-# for row in range(1, adjacencyMatrix.shape[0]):
-#     # column = row
-#     for column in range(row, adjacencyMatrix.shape[1]):
-#         # print(f"{rowCount}, {columnCount}")
-#         if ((adjacencyMatrix[row][column]) == 1):
-#             # print(f"(a,b) {rowCount},{columnCount}")
-#             connectedNodes.append((row, column))
-# # print(connectedNodes)
-# #
-# # Create an empty set to store the unique nodes
-# unique_nodes = set()
-#
-# # Iterate over the nodes in the list
-# for node in connectedNodes:
-#     # Add the node to the set, if it is not already present
-#     # The set will automatically remove any duplicates
-#     unique_nodes.add(tuple(sorted(node)))
-# # Convert the set back to a list
-# unique_nodes = list(unique_nodes)
-# # Print the unique nodesstupidwhy the
-# print(unique_nodes)
-#
-# # # for element in combination:
-# # #     print(f"element is: {element}")
-# # #     print(adjacencyMatrix[element])
-# # #     # print((adjacencyMatrix[element][element]+1))
-# # # if(adjacencyMatrix[combination[0]combination[1]]):
-# # #     print(adjacencyMatrix[combination[0]combination[1]]):
-# # #     # print(f"{combination[0] , combination[1]}")
-# # # firstelement = combination[0]
-# # # # print(firstelement)
-# # # secondElement = combination[1]
-# # # # print(secondElement)
-# # # print(adjacencyMatrix[firstelement][secondElement])
-# # # print(adjacencyMatrix[combination[0]][combination[1]])
-# # furthestConnected = []
-# # finalFurthest = []
-# # previousIndex = 0
-# # count = 0
-# # for element in range(1, adjacencyMatrix.shape[0] - 1):
-# #     if (adjacencyMatrix[combination[0]][combination[element]] == 1):
-# #         print(f"Index 0 Connected to: {element}")
-# #         # print(((combination[0]), (combination[element])))
-# #         furthestConnected.append([(combination[0], combination[element])])
-# #         count += 1
-# # else:
-# #     finalFurthest.append(furthestConnected[-1])
-# #
-# # for element in range(2, adjacencyMatrix.shape[0] - 1):
-# #     if (adjacencyMatrix[combination[1]][combination[element]] == 1):
-# #         print(f"Index 1 Connected to: {element}")
-# #         print(((combination[1]), (combination[element])))
-# #         furthestConnected.append([(combination[1], combination[element])])
-# #         # finalFurthest.append(furthestConnected[-1])
-# #         print(f"count is: {count}")
-# # else:
-# #     finalFurthest.append(furthestConnected[-1])
-#
-# #
-# # for element in range(3, adjacencyMatrix.shape[0] - 1):
-# #     if (adjacencyMatrix[combination[2]][combination[element]] == 1):
-# #         print(f"Index 2 Connected to: {element}")
-# #         print(((combination[2]), (combination[element])))
-# #         print(combination)
-# #         furthestConnected.append([(combination[2], combination[element])])
-# # else:
-# #     finalFurthest.append(furthestConnected[-1])
-#
-# # print(finalFurthest) Secondary Node: we start at the right most point and start looking for point in the leftmost
-# direction, this is the point that lies to the furthest point
-
-# for secondaryNode in range(len(combination) - 1):
-#     if(adjacencyMatrix[combination[-1]][combination[secondaryNode]]):
-#         print(f"{combination[-1]} is connected to  {combination[secondaryNode]} at position {secondaryNode+1}")
-#         print(f"Limit of {varList[-1]} element will be {varList[secondaryNode]} ")
-#         break
-
-def printLimit(primaryPoint, combination):
-    # combination = getCombination()
-    adjacencyMatrix = getadjacencyMatrix()
+def printOneLimit(primaryPoint, combination):
+    adjacencyMatrix = getAdjacencyMatrix()
     varList = getVarList()
     for secondaryNode in range(len(combination) - 1):
         if (adjacencyMatrix[combination[-primaryPoint - 1]][combination[secondaryNode]]):
             print(
-                f"{combination[-primaryPoint - 1]} is connected to  {combination[secondaryNode]} at position {secondaryNode + 1}")
-            print(f"Limit of {varList[-primaryPoint - 1]} element will be {1 + varList[secondaryNode]} ")
+                f"{combination[-primaryPoint - 1]} is connected to  "
+                f"{combination[secondaryNode]} at position {secondaryNode + 1}")
+            print(f"UpperLimit of integration variable {varList[-primaryPoint - 1]}  "
+                  f"will be {1 + varList[secondaryNode]} ")
             break
+        else:
+            print(
+                f"{combination[-primaryPoint - 1]} is not connected to  {combination[secondaryNode]} at position {secondaryNode + 1}")
+
+
+def printAllLimit(combination):
+    for primaryNode in range(math.floor((len(combination) - 1) / 2) + 1):
+        printOneLimit(primaryNode, combination)
 
 
 def main():
-    combination = getCombination()
-    for primaryNode in range(math.floor((len(combination) - 1) / 2) + 1):
-        printLimit(primaryNode, combination)
+    combinations = getCombination()
+    print(combinations[1])
+    for index in range(len(combinations)):
+        print(f"Integral Number: {index + 1}: {combinations[index]}")
+        printAllLimit(combinations[index])
+        print()
+
+
+# test report Notes: Don't check for connections for if primary is less than secondary, i.e is should not check if 4
+# is connected to 5, it wil have already check that 5 is connected to 4, only check for left side, i.e higher index
+# should check for connection with lower index nodes not the other way around
+
 
 
 main()

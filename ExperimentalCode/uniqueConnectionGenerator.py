@@ -1,8 +1,9 @@
 import numpy as np
 import sympy as sp
 import math
-limit = 0
+limit = 1
 limitsArray = []
+index = 0
 
 
 def getAdjacencyMatrix():
@@ -19,10 +20,10 @@ def getAdjacencyMatrix():
 
 
 def getPermutation():
-    # combination = [[1, 2, 4, 5, 3], [1, 2, 5, 4, 3], [1, 5, 2, 4, 3], [1, 5, 4, 2, 3], [1, 4, 2, 5, 3],
-    #                [1, 4, 5, 2, 3]]
-    combination = [[2, 1, 3, 5, 4], [2, 1, 5, 3, 4], [2, 3, 1, 5, 4], [2, 3, 5, 1, 4], [2, 5, 1, 3, 4],
-                   [2, 5, 3, 1, 4]]
+    combination = [[1, 2, 4, 5, 3], [1, 2, 5, 4, 3], [1, 5, 2, 4, 3], [1, 5, 4, 2, 3], [1, 4, 2, 5, 3],
+                   [1, 4, 5, 2, 3]]
+    # combination = [[2, 1, 3, 5, 4], [2, 1, 5, 3, 4], [2, 3, 1, 5, 4], [2, 3, 5, 1, 4], [2, 5, 1, 3, 4],
+    #                [2, 5, 3, 1, 4]]
 
     return combination
 
@@ -35,6 +36,7 @@ def getVarList():
 def printOneLimit(primaryPoint, permutation, overlapTracker):
     adjacencyMatrix = getAdjacencyMatrix()
     varList = getVarList()
+    global index
     # rightMostLimit = varList[0]
     global limit
     for secondaryNode in range(len(permutation) - 1):
@@ -50,43 +52,28 @@ def printOneLimit(primaryPoint, permutation, overlapTracker):
             # print(f"overlapTracker: {overlapTracker}")
             # print(f"Permutation: {permutation}")
             # print(f"Secondary Node: {secondaryNode}")
-            print(
-                f"{permutation[-primaryPoint - 1]} at position {len(permutation) - primaryPoint} is connected to "
-                f"{permutation[secondaryNode]} at position {secondaryNode + 1}")
-            print(f"UpperLimit of integration variable {varList[-primaryPoint - 1]} "
-                  f"will be {1 + varList[secondaryNode]} ")
+            # print(
+            #     f"{permutation[-primaryPoint - 1]} at position {len(permutation) - primaryPoint} is connected to "
+            #     f"{permutation[secondaryNode]} at position {secondaryNode + 1}")
+            print(f"UpperLimit integration variable {varList[-primaryPoint - 1]} "
+                  f" : {1 + varList[secondaryNode]} ")
             limit = 1 + varList[secondaryNode]
-            print(f"limit = {limit}")
-            limitsArray.append(((varList[-primaryPoint - 1], limit)))
-            # print(f"Overlap primary point: {overlapTracker[-primaryPoint-1]}, {len(permutation) - primaryPoint - 1}")
-            # print(f"Overlap secondary point: {overlapTracker[secondaryNode]}, {secondaryNode + 1}")
-            # overlapTracker[secondaryNode] = 1
-            # overlapTracker[-primaryPoint-1] = 1
-
-            # print(f"overlapTracker: {overlapTracker}")
-            # if (adjacencyMatrix[permutation[-primaryPoint - 2]][permutation[secondaryNode+1]]):
-            #     # print("Overlapping integral found")
-            #     print5
-            #         f"Overlapped Connection: {permutation[-primaryPoint - 1]} is connected to "
-            #         f"{permutation[secondaryNode]} at position {secondaryNode + 1}")
-            #     # print(f"UpperLimit of integration variable {varList[-primaryPoint - 1]} "
-            #     #       f"will be {1 + varList[secondaryNode]} ")
-            #     break
+            # print(f"limit = {limit}")
+            limitsArray.append(([varList[-primaryPoint - 1], limit]))
             for i in range(secondaryNode, (len(permutation) - primaryPoint - 1) + 1):
                 overlapTracker[i] = 1
             break
         elif (overlapTracker[secondaryNode] == 1 and overlapTracker[-primaryPoint - 1] == 1):
-            print(
-                f"overlap: {permutation[-primaryPoint - 1]} has overlapping connection with {permutation[secondaryNode]} at "
-                f"position {secondaryNode + 1}")
-            print(f"Upperlimit of integration variable {varList[-primaryPoint - 1]} is {limit}")
+            # print("Running in elif") print( f"overlap: {permutation[-primaryPoint - 1]} has overlapping connection
+            # with {permutation[secondaryNode]} at " f"position {secondaryNode + 1}")
+            print(f"UpperLimit integration variable {varList[-primaryPoint - 1]} : {limit}")
             break
+            # print(f"limitsArray are: {limitsArray}")
+            # limitsArray.append(([varList[-primaryPoint - 1], limit]))
 
-        else:
-            print(
-                f"{permutation[-primaryPoint - 1]} at position {len(permutation) - primaryPoint} is not connected to "
-                f"{permutation[secondaryNode]} at position {secondaryNode + 1}")
-        print(f"limitsArray are: {limitsArray}")
+        # else: print("") # print( #     f"{permutation[-primaryPoint - 1]} at position {len(permutation) -
+        # primaryPoint} is not connected to " #     f"{permutation[secondaryNode]} at position {secondaryNode + 1}")
+
 
 def printAllLimit(permutation, overlapTracker):
     for primaryNode in range(math.floor((len(permutation) - 1) / 2) + 1):

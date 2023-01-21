@@ -20,10 +20,12 @@ def getAdjacencyMatrix():
 
 
 def getPermutation():
-    combination = [[1, 2, 4, 5, 3], [1, 2, 5, 4, 3], [1, 5, 2, 4, 3], [1, 5, 4, 2, 3], [1, 4, 2, 5, 3],
-                   [1, 4, 5, 2, 3]]
+    # combination = [[1, 2, 4, 5, 3], [1, 2, 5, 4, 3], [1, 5, 2, 4, 3], [1, 5, 4, 2, 3], [1, 4, 2, 5, 3],
+    #                [1, 4, 5, 2, 3]]
     # combination = [[2, 1, 3, 5, 4], [2, 1, 5, 3, 4], [2, 3, 1, 5, 4], [2, 3, 5, 1, 4], [2, 5, 1, 3, 4],
     #                [2, 5, 3, 1, 4]]
+    combination = [[2, 1, 3, 4, 5], [2, 1, 4, 3, 5], [2, 3, 1, 4, 5], [2, 3, 4, 1, 5], [2, 4, 1, 3, 5],
+                   [2, 5, 3, 1, 4]]
 
     return combination
 
@@ -55,18 +57,21 @@ def printOneLimit(primaryPoint, permutation, overlapTracker):
             # print(
             #     f"{permutation[-primaryPoint - 1]} at position {len(permutation) - primaryPoint} is connected to "
             #     f"{permutation[secondaryNode]} at position {secondaryNode + 1}")
-            print(f"UpperLimit integration variable {varList[-primaryPoint - 1]} "
+            print(f"UpperLimit integration variable in if   {varList[-primaryPoint - 1]} "
                   f" : {1 + varList[secondaryNode]} ")
             limit = 1 + varList[secondaryNode]
             # print(f"limit = {limit}")
             limitsArray.append(([varList[-primaryPoint - 1], limit]))
+            print(f"limit = {limitsArray}")
             for i in range(secondaryNode, (len(permutation) - primaryPoint - 1) + 1):
                 overlapTracker[i] = 1
             break
         elif (overlapTracker[secondaryNode] == 1 and overlapTracker[-primaryPoint - 1] == 1):
             # print("Running in elif") print( f"overlap: {permutation[-primaryPoint - 1]} has overlapping connection
             # with {permutation[secondaryNode]} at " f"position {secondaryNode + 1}")
-            print(f"UpperLimit integration variable {varList[-primaryPoint - 1]} : {limit}")
+            print(f"UpperLimit integration variable in elif {varList[-primaryPoint - 1]}  : {limit}")
+            limitsArray.append(([varList[-primaryPoint - 1], limit]))
+            print(f"limit = {limitsArray}")
             break
             # print(f"limitsArray are: {limitsArray}")
             # limitsArray.append(([varList[-primaryPoint - 1], limit]))

@@ -15,7 +15,7 @@ def calcIntegral(varList):
     global indexLimits
     global indexOuter
     global integralValue
-    # print("This is working")
+    print("Function called")
     # print(limitsArray)
     toBeIntegrated = varList[0] ** 0
     varList = [0, sp.Symbol('w'), sp.Symbol('x'), sp.Symbol('y'), sp.Symbol('z')]
@@ -27,7 +27,6 @@ def calcIntegral(varList):
         result = sp.integrate(toBeIntegrated, (varList[-indexLimits - 1], (varList[-indexLimits - 2],
                                                                            limitsArray[indexOuter][1])))
         toBeIntegrated = result
-
         indexOuter += 1
         # print(f"(IntegrationVariable; lowerLimit; "
         #       f"UpperLimit {varList[-indexLimits - 1], (varList[-indexLimits - 2], limitsArray[indexOuter][1])}")
@@ -166,7 +165,7 @@ def main():
     # count = 0
     for indexPermutation in range(len(permutation)):
         # index += 1
-        overlapTracker = [0] * (len(permutation) - 1)
+        overlapTracker = [0] * (len(permutation[0]) - 1)
         print(f"Integral Number: {indexPermutation + 1}: {permutation[indexPermutation]}")
         valueFirstBiconnected = printAllLimit(permutation[indexPermutation], overlapTracker, varList)
         print()

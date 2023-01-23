@@ -119,7 +119,6 @@ def printOneLimit(primaryPoint, permutation, overlapTracker):
             # print(f"limit = {limit}")
             limitsArray.append(([varList[-primaryPoint - 1], limit]))
             # print(f"limit = {limitsArray}")
-            # print(f"LenPermutation in printOneLimit is: {len(permutation)}")
             for i in range(secondaryNode, (len(permutation) - primaryPoint)):
                 overlapTracker[i] = 1
             # print(overlapTracker)

@@ -16,27 +16,18 @@ def calcIntegral(varList):
     global indexLimits
     global indexOuter
     global integralValue
-
-    # print(limitsArray)
+    # TODO: It is not necessary to calculate all the integrals. Figure out a way to calculate just all the unique
+    #  integrals and then use their values when ver need be.
+    # fxn that is to be integrated
     toBeIntegrated = varList[0] ** 0
-    varList = [0, sp.Symbol('w'), sp.Symbol('x'), sp.Symbol('y'), sp.Symbol('z'), sp.Symbol('a')]
-    # Notes for tomorrow: Objective: need to evaluate integral for four limits and then update to
-    for indexLimits in range(4):
-        # print(f"Index: {indexLimits}")
-        # print(f"Second Index: {indexLimits}")
-        # print(f"Outer index: {indexOuter}")
+
+    # varList = [0, sp.Symbol('w'), sp.Symbol('x'), sp.Symbol('y'), sp.Symbol('z'), sp.Symbol('a')]
+    for indexLimits in range(len(varList) - 2):
         result = sp.integrate(toBeIntegrated, (varList[-indexLimits - 1], (varList[-indexLimits - 2],
                                                                            limitsArray[indexOuter][1])))
         toBeIntegrated = result
-        # print(f"Outer index is: {indexOuter}")
-    # elif(indexOuter % 4):
-    #     print(f"Outer index is: {indexOuter}")
         indexOuter += 1
-
-
-        # print(f"(IntegrationVariable; lowerLimit; "
-        #       f"UpperLimit {varList[-indexLimits - 1], (varList[-indexLimits - 2], limitsArray[indexOuter][1])}")
-    # print(integralValue)
+    # Integrating the final integral manually, otherwise throws error, indexOuter goes out of range for the limitsArray.
     result = sp.integrate(toBeIntegrated, (varList[1], (0, 1)))
     print(f"Value of Integral is: {result}")
     integralValue += result
@@ -46,12 +37,6 @@ def calcIntegral(varList):
 def getAdjacencyMatrix():
     adjacencyMatrix = np.array(
         [
-            # [0, 1, 2, 3, 4, 5],
-            # [1, 0, 1, 0, 0, 1],
-            # [2, 1, 0, 1, 0, 0],
-            # [3, 0, 1, 0, 1, 0],
-            # [4, 0, 0, 1, 0, 1],
-            # [5, 1, 0, 0, 1, 0]
             [0, 1, 2, 3, 4, 5, 6],
             [1, 0, 1, 0, 0, 0, 1],
             [2, 1, 0, 1, 0, 0, 0],
@@ -63,19 +48,6 @@ def getAdjacencyMatrix():
     return adjacencyMatrix
 
 
-# def getPermutation():
-#     # combination = [[1, 2, 4, 5, 3], [1, 2, 5, 4, 3], [1, 5, 2, 4, 3], [1, 5, 4, 2, 3], [1, 4, 2, 5, 3],
-#     #                [1, 4, 5, 2, 3]]
-#     # combination = [[2, 1, 3, 5, 4], [2, 1, 5, 3, 4], [2, 3, 1, 5, 4], [2, 3, 5, 1, 4], [2, 5, 1, 3, 4],
-#     #                [2, 5, 3, 1, 4]]
-#     combination = [[2, 1, 3, 4, 5], [2, 1, 4, 3, 5], [2, 3, 1, 4, 5], [2, 3, 4, 1, 5], [2, 4, 1, 3, 5],
-#                    [2, 5, 3, 1, 4]]
-#     combination = [[2, 1, 3, 4, 5], [2, 1, 4, 3, 5], [2, 3, 1, 4, 5], [2, 3, 4, 1, 5], [2, 4, 1, 3, 5],
-#                    [2, 5, 3, 1, 4]]
-#     combination = permutations_with_fixed_elements()
-#
-#     return combination
-
 
 def getAllPermutations(anyPermutation):
     perms = list(permutations(anyPermutation))
@@ -85,86 +57,70 @@ def getAllPermutations(anyPermutation):
     return allPermutations
 
 
-# def permutations_with_fixed_elements():
-#     arr = [1, 2, 4, 5, 6, 3]
-#     perms = list(permutations(arr))
-#     result = []
-#     for perm in perms:
-#         # print(perm)
-#         result.append(perm)
-#     return result
-
 
 def getVarList():
     varList = [0, sp.Symbol('w'), sp.Symbol('x'), sp.Symbol('y'), sp.Symbol('z'), sp.Symbol('a')]
     return varList
 
 
-def printOneLimit(primaryPoint, permutation, overlapTracker):
-    adjacencyMatrix = getAdjacencyMatrix()
-    varList = getVarList()
+def printOneLimit(primaryNode, permutation, overlapTracker, adjacencyMatrix, varList):
     global index
-    # rightMostLimit = varList[0]
     global limit
+    # secondaryNode: leftmost point, varied until a connection with fixed rightmost point is found.
     for secondaryNode in range(len(permutation) - 1):
-        # Start of contribution by Shaykh Umar
-        if (permutation[-primaryPoint - 1] == permutation[secondaryNode]):
+        # Start of contribution by Shaykh Umar; stop checking for connections beyond the rightmost fixed point
+        if (permutation[-primaryNode - 1] == permutation[secondaryNode]):
             break
-        #     End of contribution by Shaykh Umar
-        if (adjacencyMatrix[permutation[-primaryPoint - 1]][permutation[secondaryNode]] and
+        # End of contribution by Shaykh Umar if position primaryNode and secondary node are connected and connection
+        # is not overlapped, then upperLimit of primary node position is the position it is connected to,
+        # which is secondaryNode.
+        if (adjacencyMatrix[permutation[-primaryNode - 1]][permutation[secondaryNode]] and
                 (not overlapTracker[secondaryNode])):
-            print(f"UpperLimit integration variable in if   {varList[-primaryPoint - 1]} "
+            print(f"UpperLimit integration variable in if   {varList[-primaryNode - 1]} "
                   f" : {1 + varList[secondaryNode]} ")
             limit = 1 + varList[secondaryNode]
-            # print(f"limit = {limit}")
-            limitsArray.append(([varList[-primaryPoint - 1], limit]))
-            # print(f"limit = {limitsArray}")
-            for i in range(secondaryNode, (len(permutation) - primaryPoint)):
+            limitsArray.append(([varList[-primaryNode - 1], limit]))
+            for i in range(secondaryNode, (len(permutation) - primaryNode)):
+                # keeps track of overlapping connections and helps ignore limits generated by overlapping points
                 overlapTracker[i] = 1
-            # print(overlapTracker)
+            break
+        # if the connection between primary and secondary nodes is overlapping then the limit of primary node will
+        # be the limit of rightMost limit. This limit is the same as limit calculated in last calculation, that's why we
+        # need to use global variables, so that we can access the limit in "if" as well as "else-if" conditional.
+        elif (overlapTracker[secondaryNode] == 1 and overlapTracker[-primaryNode - 1] == 1):
+            # to assign the limit of rightMost limit
+            print(f"UpperLimit integration variable in elif {varList[-primaryNode - 1]}  : {limit}")
+            limitsArray.append(([varList[-primaryNode - 1], limit]))
+            # as soon an overlapping connection is found, conditional breaks because all the connections
+            # beyond(to the right) of that position will necessarily be overlapping.
             break
 
-        elif (overlapTracker[secondaryNode] == 1 and overlapTracker[-primaryPoint - 1] == 1):
-            # print("Running in elif") print( f"overlap: {permutation[-primaryPoint - 1]} has overlapping connection
-            # with {permutation[secondaryNode]} at " f"position {secondaryNode + 1}")
-            print(f"UpperLimit integration variable in elif {varList[-primaryPoint - 1]}  : {limit}")
-            limitsArray.append(([varList[-primaryPoint - 1], limit]))
-            # print(f"limitsArray = {limitsArray}")
-            break
-            # print(f"limitsArray are: {limitsArray}")
-            # limitsArray.append(([varList[-primaryPoint - 1], limit]))
 
-        # else: print("") # print( #     f"{permutation[-primaryPoint - 1]} at position {len(permutation) -
-        # primaryPoint} is not connected to " #     f"{permutation[secondaryNode]} at position {secondaryNode + 1}")
-
-
-def printAllLimit(permutation, overlapTracker, varList):
+def printAllLimit(permutation, overlapTracker, varList, adjacencyMatrix):
+    # primaryNode: rightMost point, fixed to check connections secondary node
     for primaryNode in range(math.floor((len(permutation) - 1) / 2) + 2):
-        printOneLimit(primaryNode, permutation, overlapTracker)
-    valueFirstBiconnected = calcIntegral(varList)
-    return valueFirstBiconnected
+        printOneLimit(primaryNode, permutation, overlapTracker, adjacencyMatrix, varList)
+    sumAllIntegrals = calcIntegral(varList)
+    return sumAllIntegrals
 
 
 def main():
     start_time = time.time()
+    adjacencyMatrix = getAdjacencyMatrix()
     anyPermutation = [1, 2, 3, 4, 5, 6]
-    permutation = getAllPermutations(anyPermutation)
+    # gets an array with all possible permutations of parameter permutations
+    permutations = getAllPermutations(anyPermutation)
+    # gets the variable list
     varList = getVarList()
-    valueFirstBiconnected = 0
-    print(permutation[0])
-    for indexPermutation in range(len(permutation)):
-        overlapTracker = [0] * (len(permutation[0]))
-        print(f"Integral Number: {indexPermutation + 1}: {permutation[indexPermutation]}")
-        valueFirstBiconnected = printAllLimit(permutation[indexPermutation], overlapTracker, varList)
+    # Sum of all the integrals for cyclic-biconnected graph of 6 points
+    sumAllIntegrals = 0
+    for indexPermutation in range(len(permutations)):
+        overlapTracker = [0] * (len(anyPermutation))
+        print(f"Integral Number: {indexPermutation + 1}: {permutations[indexPermutation]}")
+        # overlapTracker: global variable
+        sumAllIntegrals = printAllLimit(permutations[indexPermutation], overlapTracker, varList, adjacencyMatrix)
         print()
-    # print(f"limitsArray = {limitsArray}")
-    # print(len(limitsArray))
-    print(f"Sum of values of all given integrals is : {valueFirstBiconnected}")
-    # new_array = [[sublist] for sublist in limitsArray]
-    # arrayToBeReshaped = np.array(new_array)
-    # arrayToBeReshaped = np.reshape(arrayToBeReshaped, (-1, 8))
-    # print(arrayToBeReshaped)
-    # print(new_array)
+    print(f"Sum of values of all given integrals is : {sumAllIntegrals}")
     print("--- %s seconds ---" % (time.time() - start_time))
 
 

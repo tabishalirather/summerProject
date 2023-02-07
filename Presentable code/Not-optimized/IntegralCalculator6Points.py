@@ -7,14 +7,13 @@ import time
 limit = 1
 limitsArray = []
 index = 0
-indexLimits = 0
+limitIndex = 0
 indexOuter = 0
 integralValue = 0
-savesIntegrals = []
 
 
 def calcIntegral(varList):
-    global indexLimits
+    global limitIndex
     global indexOuter
     global integralValue
     # TODO: It is not necessary to calculate all the integrals. Figure out a way to calculate just all the unique
@@ -23,12 +22,9 @@ def calcIntegral(varList):
     toBeIntegrated = varList[0] ** 0
 
     # varList = [0, sp.Symbol('w'), sp.Symbol('x'), sp.Symbol('y'), sp.Symbol('z'), sp.Symbol('a')]
-    # index limits is global because otherwise everytime calcIntegral fxn is called, indexLimits becomes zero,
-    # which is not good.
     for indexLimits in range(len(varList) - 2):
         result = sp.integrate(toBeIntegrated, (varList[-indexLimits - 1], (varList[-indexLimits - 2],
                                                                            limitsArray[indexOuter][1])))
-        savesIntegrals.append([result])
         toBeIntegrated = result
         indexOuter += 1
     # Integrating the final integral manually, otherwise throws error, indexOuter goes out of range for the limitsArray.
@@ -125,7 +121,6 @@ def main():
         sumAllIntegrals = printAllLimit(permutations[indexPermutation], overlapTracker, varList, adjacencyMatrix)
         print()
     print(f"Sum of values of all given integrals is : {sumAllIntegrals}")
-    print(f"IntegralArray is: {savesIntegrals}")
     print("--- %s seconds ---" % (time.time() - start_time))
 
 

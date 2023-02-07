@@ -1,0 +1,15 @@
+from itertools import permutations
+
+def permutations_with_fixed_elements(arr, fixed_indices):
+    fixed_elements = [arr[i] for i in fixed_indices]
+    variable_indices = [i for i in range(len(arr)) if i not in fixed_indices]
+    variable_elements = [arr[i] for i in variable_indices]
+    variable_permutations = permutations(variable_elements)
+    permutations_with_fixed_elements = [list(p) for p in variable_permutations]
+    for permutation in permutations_with_fixed_elements:
+        for i, variable_index in enumerate(variable_indices):
+            arr[variable_index] = permutation[i]
+        fixed_elements_permutations.append(arr.copy())
+    return fixed_elements_permutations
+
+print(permutations_with_fixed_elements([1, 2, 4, 5, 6, 3], [0, 5]))

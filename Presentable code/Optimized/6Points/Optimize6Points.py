@@ -1,178 +1,109 @@
-import sympy as sp
-import math
-from itertools import permutations, zip_longest
 import time
+from collections import Counter
+from itertools import permutations, zip_longest
 
-limit = 1
-limitsArray = []
-indexOuter = 0
-duplicateLimitsArray = []
+import sympy as sp
 
-
-def countIntegralFrequency():
-    valueArray = assignValueToUniqueIntegrals()
-    countDict = {}
-    for value in valueArray:
-        if value in countDict:
-            countDict[value] += 1
-        else:
-            countDict[value] = 1
-    print(f"Count is: {countDict}")
-    result = 0
-    for key, value in countDict.items():
-        result += (key*value)
-    print(f"FinalValue: {result}")
+var_list = [0, sp.Symbol('w'), sp.Symbol('x'), sp.Symbol('y'), sp.Symbol('z'), sp.Symbol('a')]
 
 
-def assignValueToUniqueIntegrals():
-    uniqueLimitsIntegralValueDict = makeUniqueValueDict()
-    groupedLimitArray = getGroupedArray()
-    timesArray = []
-    for ALimit in groupedLimitArray:
-        ALimit = tuple(map(tuple, ALimit))
-        if ALimit in uniqueLimitsIntegralValueDict:
-            valueOfIntegral = uniqueLimitsIntegralValueDict[ALimit]
-            timesArray.append(valueOfIntegral)
-    return timesArray
+def calculate_integrals_sum(limits_tuple):
+    unique_limits_integral_value_dict = make_unique_value_dict(limits_tuple)
+    grouped_limit_tuple = get_tuple_of_grouped_limits_tuple(limits_tuple)
+    limits_counter = Counter(grouped_limit_tuple)
+    print(f"Count is {limits_counter}")
+    result = sum(unique_limits_integral_value_dict[k] for k in grouped_limit_tuple)
+    print(f"Final value: {result}")
 
 
-def makeUniqueValueDict():
-    uniqueLimitsWithValue = insertUniqueIntegralValue()
-    uniqueLimitsIntegralValueDict = {}
-    for uniqueLimit in uniqueLimitsWithValue:
-        key = tuple(tuple(i) for i in uniqueLimit[:4])
-        value = uniqueLimit[-1]
-        uniqueLimitsIntegralValueDict[key] = value
-    uniqueLimitsIntegralValueDictTuple = {tuple(key): value for key, value in uniqueLimitsIntegralValueDict.items()}
-    print(f"limitAndValue: {uniqueLimitsIntegralValueDictTuple}")
-    return uniqueLimitsIntegralValueDictTuple
+def make_unique_value_dict(limits_array):
+    unique_limits = get_unique_limits(limits_array)
+    unique_integrals_value = calc_unique_integrals(unique_limits)
+    result = dict(zip(unique_limits, unique_integrals_value))
+    print(f"Limits & value: {result}")
+    return result
 
 
-
-def insertUniqueIntegralValue():
-    uniqueIntegralsValue = calcUniqueIntegrals()
-    uniqueLimits = getUniqueLimits()
-    for i in range(len(uniqueLimits)):
-        uniqueLimits[i].append(uniqueIntegralsValue[i])
-    return uniqueLimits
-
-
-def calcUniqueIntegrals():
-    valueUniqueIntegrals = []
-    uniqueLimits = getUniqueLimits()
-    varList = [0, sp.Symbol('w'), sp.Symbol('x'), sp.Symbol('y'), sp.Symbol('z'), sp.Symbol('a')]
-    toBeIntegrated = (varList[-1]) ** 0
-    for j in range(len(uniqueLimits)):
-        for i in range(len(uniqueLimits[0])-1):
-            if(i < len(uniqueLimits)):
-                result = sp.integrate(toBeIntegrated, (uniqueLimits[j][i][0], (uniqueLimits[j][1+i][0],
-                                                                               uniqueLimits[j][i][1])))
-                toBeIntegrated = result
-        result = sp.integrate(toBeIntegrated, (varList[2], (varList[1], 1)))
-        toBeIntegrated = result
-        result = sp.integrate(toBeIntegrated, (varList[1], (0, 1)))
-        toBeIntegrated = (varList[-1]) ** 0
-        valueUniqueIntegrals.append(result)
-    return valueUniqueIntegrals
+def calc_unique_integrals(unique_limits):
+    value_unique_integrals = []
+    for limits in unique_limits:
+        to_be_integrated = var_list[-1] ** 0
+        for i in range(len(limits) - 1):
+            to_be_integrated = sp.integrate(to_be_integrated, (limits[i][0], (limits[1 + i][0], limits[i][1])))
+        to_be_integrated = sp.integrate(to_be_integrated, (var_list[2], (var_list[1], 1)))
+        result = sp.integrate(to_be_integrated, (var_list[1], (0, 1)))
+        value_unique_integrals.append(result)
+    return value_unique_integrals
 
 
-
-def getGroupedArray():
-    groupedList = list(zip_longest(*[iter(limitsArray)] * 4))
-    groupedArray = []
-    for subArray in groupedList:
-        groupedArray.append(subArray)
-    return groupedArray
+def get_tuple_of_grouped_limits_tuple(limits_array):
+    group_size = 4
+    return tuple(zip_longest(*(iter(limits_array),) * group_size))
 
 
-def getUniqueLimits():
-    grouped_list = list(zip_longest(*[iter(duplicateLimitsArray)] * 4))
-    uniqueArray = []
-    for sub_array in grouped_list:
-        sub_array = list(sub_array)
-        if sub_array not in uniqueArray:
-            uniqueArray.append(sub_array)
-    return uniqueArray
+def get_unique_limits(limits_array):
+    group_size = 4
+    return tuple(set(zip_longest(*(iter(limits_array),) * group_size)))
 
 
-def makeDuplicateLimitsArray(varList):
-    global indexOuter
-    for indexLimits in range(len(varList) - 2):
-        duplicateLimitsArray.append([varList[-indexLimits - 1], limitsArray[indexOuter][1]])
-        indexOuter += 1
-
-
-def getAdjacencyMatrix():
+def get_adjacency_matrix():
     matrix = []
     with open(r"6Graph1.txt", "r") as file:
         for line in file:
-            matrix.append([int(x) for x in line.strip().split()])
-    adjacencyMatrix = [[i + 1] + row for i, row in enumerate(matrix)]
-    adjacencyMatrix.insert(0, [0, 1, 2, 3, 4, 5, 6])
-    return adjacencyMatrix
+            matrix.append([int(x) for x in line.split()])
+    adjacency_matrix = [[i + 1] + row for i, row in enumerate(matrix)]
+    adjacency_matrix.insert(0, [0, 1, 2, 3, 4, 5, 6])
+    return adjacency_matrix
 
 
-def getAllPermutations(anyPermutation):
-    perms = list(permutations(anyPermutation))
-    allPermutations = []
-    for perm in perms:
-        allPermutations.append(perm)
-    return allPermutations
+def get_all_permutations(permutation):
+    return list(permutations(permutation))
 
 
-def getVarList():
-    varList = [0, sp.Symbol('w'), sp.Symbol('x'), sp.Symbol('y'), sp.Symbol('z'), sp.Symbol('a')]
-    return varList
-
-
-def getOneLimit(primaryNode, permutation, overlapTracker, adjacencyMatrix, varList):
-    global limit
-    # secondaryNode: leftmost point, varied until a connection with fixed rightmost point is found.
-    for secondaryNode in range(len(permutation) - 1):
-        # Start of contribution by Shaykh Umar; stop checking for connections beyond the rightmost fixed point
-        if (permutation[-primaryNode - 1] == permutation[secondaryNode]):
-            break
-        # End of contribution by Shaykh Umar
-        # if position primaryNode and secondary node are connected and connection
+def get_one_limit(primary_node, permutation, overlap_tracker, adjacency_matrix, limit, limits_array):
+    # secondary_node: leftmost point, varied until a connection with fixed rightmost point is found.
+    for secondary_node in range(primary_node):
+        # if position primary_node and secondary node are connected and connection
         # is not overlapped, then upperLimit of primary node position is the position it is connected to,
-        # which is secondaryNode.
-        if (adjacencyMatrix[permutation[-primaryNode - 1]][permutation[secondaryNode]] and
-                (not overlapTracker[secondaryNode])):
+        # which is secondary_node.
+        if adjacency_matrix[permutation[primary_node]][permutation[secondary_node]] and not overlap_tracker[secondary_node]:
             # print(f"UpperLimit integration variable in if   {varList[-primaryNode - 1]} "
-            #       f" : {1 + varList[secondaryNode]} ")
-            limit = 1 + varList[secondaryNode]
-            limitsArray.append(([varList[-primaryNode - 1], limit]))
-            for i in range(secondaryNode, (len(permutation) - primaryNode)):
+            #       f" : {1 + varList[secondary_node]} ")
+            limit = 1 + var_list[secondary_node]
+            for i in range(secondary_node, primary_node + 1):
                 # keeps track of overlapping connections and helps ignore limits generated by overlapping points
-                overlapTracker[i] = 1
+                overlap_tracker[i] = 1
             break
         # if the connection between primary and secondary nodes is overlapping then the limit of primary node will
         # be the limit of rightMost limit. This limit is the same as limit calculated in last calculation, that's why we
         # need to use global variables, so that we can access the limit in "if" as well as "else-if" conditional.
-        elif (overlapTracker[secondaryNode] == 1 and overlapTracker[-primaryNode - 1] == 1):
-            limitsArray.append(([varList[-primaryNode - 1], limit]))
+        elif overlap_tracker[secondary_node] == 1 and overlap_tracker[primary_node] == 1:
             break
+    limits_array.append(([var_list[primary_node], limit]))
+    return limit
 
 
-def getAllLimits(permutation, overlapTracker, varList, adjacencyMatrix):
-    for primaryNode in range(math.floor((len(permutation) - 1) / 2) + 2):
-        getOneLimit(primaryNode, permutation, overlapTracker, adjacencyMatrix, varList)
-    makeDuplicateLimitsArray(varList)
+def get_all_limits(permutation, adjacency_matrix, limits_array):
+    overlap_tracker = [0] * len(permutation)
+    limit = 1
+    for primary_node in range(len(permutation) - 1, 1, -1):
+        limit = get_one_limit(primary_node, permutation, overlap_tracker, adjacency_matrix, limit, limits_array)
 
 
 def main():
     print("Hello mate! Working, Hold on!")
+
     start_time = time.time()
-    adjacencyMatrix = getAdjacencyMatrix()
-    anyPermutation = [1, 2, 3, 4, 5, 6]
-    # gets an array with all possible permutations of parameter permutations
-    permutation = getAllPermutations(anyPermutation)
-    # gets the variable list
-    varList = getVarList()
-    for indexPermutation in range(len(permutation)):
-        overlapTracker = [0] * (len(anyPermutation))
-        getAllLimits(permutation[indexPermutation], overlapTracker, varList, adjacencyMatrix)
-    countIntegralFrequency()
+
+    adjacency_matrix = get_adjacency_matrix()
+    initial_permutation = [1, 2, 3, 4, 5, 6]
+    all_permutations = get_all_permutations(initial_permutation)
+    limits_array = []
+    for perm in all_permutations:
+        get_all_limits(perm, adjacency_matrix, limits_array)
+    limits_tuple = tuple(map(tuple, limits_array))
+    calculate_integrals_sum(limits_tuple)
+
     print("--- %s seconds ---" % (time.time() - start_time))
 
 
